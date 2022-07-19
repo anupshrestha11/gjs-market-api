@@ -304,4 +304,4 @@ Route::get('top-shops', [ShopController::class, 'topShops']);
 
 
 
-Route::apiResource('grape_versions', GrapeVersionController::class);
+Route::apiResource('grapes-js', GrapeVersionController::class);
