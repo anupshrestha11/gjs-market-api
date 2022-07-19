@@ -29,7 +29,7 @@ class GrapeVersionController extends CoreController
      */
     public function index()
     {
-        return $this->repository->getParents();
+        return $this->repository->getGrapeVersions();
     }
 
     /**
@@ -40,7 +40,7 @@ class GrapeVersionController extends CoreController
      */
     public function show($id)
     {
-        return $this->repository->getGrapeVersionChilds($id);
+        return $this->repository->showGrapeVersion($id);
     }
 
 

@@ -283,7 +283,6 @@ Route::group(['middleware' => ['permission:' . Permission::SUPER_ADMIN, 'auth:sa
         ]
     );
 
-    Route::apiResource('grape_versions', GrapeVersionController::class);
 });
 
 Route::get(
@@ -305,3 +304,4 @@ Route::get('top-shops', [ShopController::class, 'topShops']);
 
 
 
+Route::apiResource('grape_versions', GrapeVersionController::class);

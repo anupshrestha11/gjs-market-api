@@ -51,10 +51,10 @@ class GrapeVersionRepository extends BaseRepository
      * @param  integer $id
      * @return LengthAwarePaginator|JsonResponse|Collection|mixed
      */
-    public function getGrapeVersionChilds($id)
+    public function showGrapeVersion($id)
     {
         try {
-            return $this->model()::find($id)->childs()->paginate(10);
+            return $this->model()::with('childs')->where('id',$id)->firstOrFail();
         } catch (Exception $e) {
             throw new MarvelException(SOMETHING_WENT_WRONG);
         }
