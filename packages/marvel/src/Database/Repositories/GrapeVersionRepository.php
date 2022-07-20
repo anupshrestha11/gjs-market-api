@@ -17,14 +17,14 @@ class GrapeVersionRepository extends BaseRepository
     }
 
     /**
-     *  return parent grape versions with childs
+     *  return parent grape versions with children
      *
      * @return LengthAwarePaginator|JsonResponse|Collection|mixed
      */
     public function getGrapeVersions()
     {
         try {
-            return $this->model()::where('parent_id', 0)->with('childs')->paginate(10);
+            return $this->model()::where('parent_id', null)->with(['children','parent'])->paginate(10);
         } catch (Exception $e) {
             throw new MarvelException(SOMETHING_WENT_WRONG);
         }
@@ -46,7 +46,7 @@ class GrapeVersionRepository extends BaseRepository
 
 
     /**
-     *  return grape version childs
+     *  return grape version children
      *
      * @param  integer $id
      * @return LengthAwarePaginator|JsonResponse|Collection|mixed
@@ -54,7 +54,7 @@ class GrapeVersionRepository extends BaseRepository
     public function showGrapeVersion($id)
     {
         try {
-            return $this->model()::with('childs')->where('id',$id)->firstOrFail();
+            return $this->model()::with('children')->where('id',$id)->firstOrFail();
         } catch (Exception $e) {
             throw new MarvelException(SOMETHING_WENT_WRONG);
         }

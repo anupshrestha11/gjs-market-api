@@ -16,7 +16,8 @@ class CreateGrapeVersionsTable extends Migration
         Schema::create('grape_versions', function (Blueprint $table) {
             $table->id();
             $table->string('version')->required();
-            $table->bigInteger('parent_id')->default(0);
+            $table->bigInteger('parent_id')->nullable()->default(null);
+            $table->string('slug')->required()->unique();
             $table->timestamps();
         });
     }
