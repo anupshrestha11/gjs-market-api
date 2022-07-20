@@ -2,6 +2,7 @@
 
 namespace Marvel\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Marvel\Database\Repositories\GrapeVersionRepository;
 use Marvel\Http\Requests\GrapeVersionRequest;
 use Marvel\Http\Requests\GrapeVersionUpdateRequest;
@@ -27,9 +28,9 @@ class GrapeVersionController extends CoreController
      *
      * @return LengthAwarePaginator|JsonResponse|Collection|mixed
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->repository->getGrapeVersions();
+        return $this->repository->getGrapeVersions($request);
     }
 
     /**

@@ -21,10 +21,14 @@ class GrapeVersionRepository extends BaseRepository
      *
      * @return LengthAwarePaginator|JsonResponse|Collection|mixed
      */
-    public function getGrapeVersions()
+    public function getGrapeVersions($request)
     {
         try {
-            return $this->model()::where('parent_id', null)->with(['children','parent'])->paginate(10);
+            $parent = $request->parent;
+            if ($parent === 'null') {
+                return $this->model()::where('parent_id', null)->with(['children', 'parent'])->paginate(10);
+            }
+            return $this->model()::with(['parent', 'children'])->paginate(10);
         } catch (Exception $e) {
             throw new MarvelException(SOMETHING_WENT_WRONG);
         }
@@ -54,7 +58,7 @@ class GrapeVersionRepository extends BaseRepository
     public function showGrapeVersion($id)
     {
         try {
-            return $this->model()::with('children')->where('id',$id)->firstOrFail();
+            return $this->model()::with('children')->where('id', $id)->firstOrFail();
         } catch (Exception $e) {
             throw new MarvelException(SOMETHING_WENT_WRONG);
         }

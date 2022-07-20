@@ -55,6 +55,6 @@ class GrapeVersion extends Model
      */
     public function parent()
     {
-        return $this->hasOne(GrapeVersion::class, 'id', 'parent_id');
+        return $this->hasOne(GrapeVersion::class, 'id', 'parent_id')->with('parent');
     }
 }
