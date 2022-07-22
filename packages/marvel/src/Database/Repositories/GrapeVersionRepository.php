@@ -5,9 +5,32 @@ namespace Marvel\Database\Repositories;
 use Exception;
 use Marvel\Database\Models\GrapeVersion;
 use Marvel\Exceptions\MarvelException;
+use Prettus\Repository\Exceptions\RepositoryException;
+use Prettus\Repository\Criteria\RequestCriteria;
+
 
 class GrapeVersionRepository extends BaseRepository
 {
+
+    /**
+     * @var array
+     */
+    protected $fieldSearchable = [
+        'version'        => 'like',
+        'parent',
+        'slug',
+    ];
+
+
+    public function boot()
+    {
+        try {
+            $this->pushCriteria(app(RequestCriteria::class));
+        } catch (RepositoryException $e) {
+        }
+    }
+
+
     /**
      * Configure the Model
      **/
@@ -25,10 +48,12 @@ class GrapeVersionRepository extends BaseRepository
     {
         try {
             $parent = $request->parent;
+            $limit = $request->limit ?   $request->limit : 15;
+
             if ($parent === 'null') {
-                return $this->model()::where('parent_id', null)->with(['children', 'parent'])->paginate(10);
+                return static::where('parent_id', null)->with(['children', 'parent'])->paginate($limit);
             }
-            return $this->model()::with(['parent', 'children'])->paginate(10);
+            return static::with(['parent', 'children'])->paginate($limit);
         } catch (Exception $e) {
             throw new MarvelException(SOMETHING_WENT_WRONG);
         }
@@ -42,7 +67,7 @@ class GrapeVersionRepository extends BaseRepository
     public function getParents()
     {
         try {
-            return $this->model()::where('parent_id', 0)->paginate(10);
+            return static::where('parent_id', 0)->paginate(10);
         } catch (Exception $e) {
             throw new MarvelException(SOMETHING_WENT_WRONG);
         }
@@ -58,7 +83,7 @@ class GrapeVersionRepository extends BaseRepository
     public function showGrapeVersion($id)
     {
         try {
-            return $this->model()::with('children')->where('id', $id)->firstOrFail();
+            return static::with('children')->where('id', $id)->firstOrFail();
         } catch (Exception $e) {
             throw new MarvelException(SOMETHING_WENT_WRONG);
         }
@@ -73,7 +98,7 @@ class GrapeVersionRepository extends BaseRepository
     public function storeGrapeVersion($request)
     {
         try {
-            return $this->model()::create($request->all());
+            return static::create($request->all());
         } catch (Exception $e) {
             throw new MarvelException(SOMETHING_WENT_WRONG);
         }
@@ -89,7 +114,7 @@ class GrapeVersionRepository extends BaseRepository
     public function updateGrapeVersion($request, $id)
     {
         try {
-            $grapeVersion = $this->model()::find($id);
+            $grapeVersion = static::find($id);
             $grapeVersion->update($request->all());
             return $grapeVersion;
         } catch (Exception $e) {
@@ -107,7 +132,7 @@ class GrapeVersionRepository extends BaseRepository
     public function deleteGrapeVersion($id)
     {
         try {
-            $this->model()::find($id)->delete();
+            static::find($id)->delete();
             return "Grape version deleted successfully";
         } catch (Exception $e) {
             throw new MarvelException(SOMETHING_WENT_WRONG);
