@@ -232,6 +232,8 @@ Route::group(['middleware' => ['permission:' . Permission::SUPER_ADMIN, 'auth:sa
     Route::apiResource('categories', CategoryController::class, [
         'only' => ['store', 'update', 'destroy'],
     ]);
+    Route::apiResource('grapes-js', GrapeVersionController::class);
+
     Route::apiResource('tags', TagController::class, [
         'only' => ['store', 'update', 'destroy'],
     ]);
@@ -282,7 +284,6 @@ Route::group(['middleware' => ['permission:' . Permission::SUPER_ADMIN, 'auth:sa
             'only' => ['destroy', 'update'],
         ]
     );
-
 });
 
 Route::get(
@@ -301,7 +302,3 @@ Route::post(
 
 
 Route::get('top-shops', [ShopController::class, 'topShops']);
-
-
-
-Route::apiResource('grapes-js', GrapeVersionController::class);

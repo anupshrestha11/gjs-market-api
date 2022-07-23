@@ -114,7 +114,7 @@ class CreateMarvelTables extends Migration
                     ProductType::VARIABLE,
                 ]
             )->default(ProductType::SIMPLE);
-            $table->string('unit');
+            $table->string('unit')->nullable();
             $table->string('height')->nullable();
             $table->string('width')->nullable();
             $table->string('length')->nullable();

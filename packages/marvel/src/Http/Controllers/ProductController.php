@@ -85,7 +85,7 @@ class ProductController extends CoreController
         try {
             $limit = isset($request->limit) ? $request->limit : 10;
             $product = $this->repository
-                ->with(['type', 'shop', 'categories', 'tags', 'variations.attribute.values', 'variation_options', 'author', 'manufacturer'])
+                ->with(['type', 'shop', 'categories','grapeVersions','tags', 'variations.attribute.values', 'variation_options', 'author', 'manufacturer'])
                 ->withCount(['orders' => function ($query) {
                     $query->where('parent_id', null);
                 }])

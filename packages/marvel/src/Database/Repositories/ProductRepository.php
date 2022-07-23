@@ -91,6 +91,9 @@ class ProductRepository extends BaseRepository
             if (isset($request['categories'])) {
                 $product->categories()->attach($request['categories']);
             }
+            if (isset($request['grapes_js'])) {
+                $product->grapeVersions()->attach($request['grapes_js']);
+            }
             if (isset($request['tags'])) {
                 $product->tags()->attach($request['tags']);
             }
@@ -124,6 +127,9 @@ class ProductRepository extends BaseRepository
             $product = $this->findOrFail($id);
             if (isset($request['categories'])) {
                 $product->categories()->sync($request['categories']);
+            }
+            if (isset($request['grapes_js'])) {
+                $product->grapeVersions()->sync($request['grapes_js']);
             }
             if (isset($request['tags'])) {
                 $product->tags()->sync($request['tags']);

@@ -20,6 +20,14 @@ class CreateGrapeVersionsTable extends Migration
             $table->string('slug')->required()->unique();
             $table->timestamps();
         });
+
+        Schema::create('grape_versions_products', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('grape_versions_id');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('grape_versions_id')->references('id')->on('grape_versions')->onDelete('cascade');
+        });
     }
 
     /**
@@ -30,5 +38,7 @@ class CreateGrapeVersionsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('grape_versions');
+        Schema::dropIfExists('grape_versions_products');
+
     }
 }
