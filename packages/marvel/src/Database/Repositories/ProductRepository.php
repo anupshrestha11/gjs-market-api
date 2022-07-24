@@ -82,6 +82,8 @@ class ProductRepository extends BaseRepository
     public function storeProduct($request)
     {
         try {
+            // auto generate sku
+            $request['sku'] = bin2hex(openssl_random_pseudo_bytes(10));
             $data = $request->only($this->dataArray);
             if ($request->product_type == ProductType::SIMPLE) {
                 $data['max_price'] = isset($data['price']) ? $data['price'] : null;
