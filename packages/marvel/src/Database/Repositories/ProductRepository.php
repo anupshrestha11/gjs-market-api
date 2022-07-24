@@ -84,8 +84,8 @@ class ProductRepository extends BaseRepository
         try {
             $data = $request->only($this->dataArray);
             if ($request->product_type == ProductType::SIMPLE) {
-                $data['max_price'] = $data['price'];
-                $data['min_price'] = $data['price'];
+                $data['max_price'] = isset($data['price']) ? $data['price'] : null;
+                $data['min_price'] = isset($data['price']) ? $data['price'] : null;
             }
             $product = $this->create($data);
             if (isset($request['categories'])) {
