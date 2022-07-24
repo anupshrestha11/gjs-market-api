@@ -54,6 +54,8 @@ class ProductController extends CoreController
     public function store(ProductCreateRequest $request)
     {
         if ($this->repository->hasPermission($request->user(), $request->shop_id)) {
+             // auto generate sku
+            $request['sku'] = bin2hex(openssl_random_pseudo_bytes(10));
             return $this->repository->storeProduct($request);
         } else {
             throw new MarvelException(NOT_AUTHORIZED);
