@@ -24,9 +24,9 @@ class CreateGrapeVersionsTable extends Migration
         Schema::create('grape_versions_products', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('grape_versions_id');
+            $table->unsignedBigInteger('grape_version_id');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('grape_versions_id')->references('id')->on('grape_versions')->onDelete('cascade');
+            $table->foreign('grape_version_id')->references('id')->on('grape_versions')->onDelete('cascade');
         });
     }
 

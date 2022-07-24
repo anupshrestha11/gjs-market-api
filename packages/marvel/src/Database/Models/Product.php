@@ -144,7 +144,7 @@ class Product extends Model
       /**
      * @return BelongsToMany
      */
-    public function grapeVersions(): BelongsToMany
+    public function grapes_js(): BelongsToMany
     {
         return $this->belongsToMany(GrapeVersion::class, 'grape_versions_products');
     }
