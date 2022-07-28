@@ -5,6 +5,7 @@ namespace Marvel\Database\Repositories;
 
 use Exception;
 use Marvel\Database\Models\Product;
+use Marvel\Database\Models\Tag;
 use Marvel\Database\Models\Variation;
 use Marvel\Enums\ProductType;
 use Marvel\Exceptions\MarvelException;
@@ -96,6 +97,16 @@ class ProductRepository extends BaseRepository
                 $product->grapes_js()->attach($request['grapes_js']);
             }
             if (isset($request['tags'])) {
+                if (!empty($request['tags'])) {
+                    foreach ($request['tags'] as $key => $tag) {
+                        if (!is_numeric($tag)) {
+                            $createdTag =  Tag::create([
+                                'name' => $tag
+                            ]);
+                            $request['tags'][$key] = $createdTag->id;
+                        }
+                    }
+                }
                 $product->tags()->attach($request['tags']);
             }
             if (isset($request['variations'])) {
@@ -133,6 +144,16 @@ class ProductRepository extends BaseRepository
                 $product->grapes_js()->sync($request['grapes_js']);
             }
             if (isset($request['tags'])) {
+                if (!empty($request['tags'])) {
+                    foreach ($request['tags'] as $key => $tag) {
+                        if (!is_numeric($tag)) {
+                            $createdTag =  Tag::create([
+                                'name' => $tag
+                            ]);
+                            $request['tags'][$key] = $createdTag->id;
+                        }
+                    }
+                }
                 $product->tags()->sync($request['tags']);
             }
             if (isset($request['variations'])) {
