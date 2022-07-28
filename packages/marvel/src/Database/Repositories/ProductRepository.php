@@ -98,16 +98,19 @@ class ProductRepository extends BaseRepository
             }
             if (isset($request['tags'])) {
                 if (!empty($request['tags'])) {
+                    $syncTags = [];
                     foreach ($request['tags'] as $key => $tag) {
                         if (!is_numeric($tag)) {
                             $createdTag =  Tag::create([
                                 'name' => $tag
                             ]);
-                            $request['tags'][$key] = $createdTag->id;
+                            $syncTags[$key] = $createdTag->id;
+                        } else {
+                            $syncTags[$key] = $tag;
                         }
                     }
+                    $product->tags()->attach($syncTags);
                 }
-                $product->tags()->attach($request['tags']);
             }
             if (isset($request['variations'])) {
                 $product->variations()->attach($request['variations']);
@@ -144,17 +147,21 @@ class ProductRepository extends BaseRepository
                 $product->grapes_js()->sync($request['grapes_js']);
             }
             if (isset($request['tags'])) {
+
                 if (!empty($request['tags'])) {
+                    $syncTags = [];
                     foreach ($request['tags'] as $key => $tag) {
                         if (!is_numeric($tag)) {
                             $createdTag =  Tag::create([
                                 'name' => $tag
                             ]);
-                            $request['tags'][$key] = $createdTag->id;
+                            $syncTags[$key] = $createdTag->id;
+                        } else {
+                            $syncTags[$key] = $tag;
                         }
                     }
+                    $product->tags()->sync($syncTags);
                 }
-                $product->tags()->sync($request['tags']);
             }
             if (isset($request['variations'])) {
                 $product->variations()->sync($request['variations']);
