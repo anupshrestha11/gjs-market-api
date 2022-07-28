@@ -96,22 +96,13 @@ class ProductRepository extends BaseRepository
             if (isset($request['grapes_js'])) {
                 $product->grapes_js()->attach($request['grapes_js']);
             }
-            if (isset($request['tags'])) {
-                if (!empty($request['tags'])) {
-                    $syncTags = [];
-                    foreach ($request['tags'] as $key => $tag) {
-                        if (!is_numeric($tag)) {
-                            $createdTag =  Tag::create([
-                                'name' => $tag
-                            ]);
-                            $syncTags[$key] = $createdTag->id;
-                        } else {
-                            $syncTags[$key] = $tag;
-                        }
-                    }
-                    $product->tags()->attach($syncTags);
-                }
+            if (isset($request['tags']) && !empty($request['tags'])) {
+                $syncTags = $this->evaluateTags($request);
+                $product->tags()->attach($syncTags);
             }
+
+
+
             if (isset($request['variations'])) {
                 $product->variations()->attach($request['variations']);
             }
@@ -146,22 +137,9 @@ class ProductRepository extends BaseRepository
             if (isset($request['grapes_js'])) {
                 $product->grapes_js()->sync($request['grapes_js']);
             }
-            if (isset($request['tags'])) {
-
-                if (!empty($request['tags'])) {
-                    $syncTags = [];
-                    foreach ($request['tags'] as $key => $tag) {
-                        if (!is_numeric($tag)) {
-                            $createdTag =  Tag::create([
-                                'name' => $tag
-                            ]);
-                            $syncTags[$key] = $createdTag->id;
-                        } else {
-                            $syncTags[$key] = $tag;
-                        }
-                    }
-                    $product->tags()->sync($syncTags);
-                }
+            if (isset($request['tags']) && !empty($request['tags'])) {
+                $syncTags = $this->evaluateTags($request);
+                $product->tags()->sync($syncTags);
             }
             if (isset($request['variations'])) {
                 $product->variations()->sync($request['variations']);
@@ -247,5 +225,31 @@ class ProductRepository extends BaseRepository
         } catch (Exception $e) {
             return [];
         }
+    }
+
+
+    private function evaluateTags($request)
+    {
+        $syncTags = [];
+
+        foreach ($request['tags'] as $key => $tag) {
+
+            if (is_string($tag)) {
+                $exists = Tag::where('name', $tag)->first();
+                if (!empty($exists)) {
+                    $syncTags[$key] = $exists->id;
+                } else {
+                    $createdTag =  Tag::create([
+                        'name' => $tag
+                    ]);
+                    $syncTags[$key] = $createdTag->id;
+                }
+            } else {
+                $syncTags[$key] = $tag;
+            }
+        }
+
+
+        return $syncTags;
     }
 }
