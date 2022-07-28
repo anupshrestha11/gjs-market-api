@@ -200,8 +200,8 @@ class ProductRepository extends BaseRepository
                 $data['sku'] = NULL;
             }
             if ($request->product_type == ProductType::SIMPLE) {
-                $data['max_price'] = $data['price'];
-                $data['min_price'] = $data['price'];
+                $data['max_price'] = isset($data['price']) ? $data['price'] : null;
+                $data['min_price'] = isset($data['price']) ? $data['price'] : null;
             }
             $product->update($data);
             if ($product->product_type === ProductType::SIMPLE) {
