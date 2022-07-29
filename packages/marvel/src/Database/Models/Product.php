@@ -141,6 +141,14 @@ class Product extends Model
         return $this->belongsToMany(Category::class, 'category_product');
     }
 
+      /**
+     * @return BelongsToMany
+     */
+    public function grapes_js(): BelongsToMany
+    {
+        return $this->belongsToMany(GrapeVersion::class, 'grape_versions_products');
+    }
+
     /**
      * @return BelongsToMany
      */

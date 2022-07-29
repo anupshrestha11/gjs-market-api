@@ -5,6 +5,7 @@ namespace Marvel\Database\Repositories;
 
 use Exception;
 use Marvel\Database\Models\Product;
+use Marvel\Database\Models\Tag;
 use Marvel\Database\Models\Variation;
 use Marvel\Enums\ProductType;
 use Marvel\Exceptions\MarvelException;
@@ -82,18 +83,29 @@ class ProductRepository extends BaseRepository
     public function storeProduct($request)
     {
         try {
+
             $data = $request->only($this->dataArray);
             if ($request->product_type == ProductType::SIMPLE) {
-                $data['max_price'] = $data['price'];
-                $data['min_price'] = $data['price'];
+                $data['max_price'] = isset($data['price']) ? $data['price'] : null;
+                $data['min_price'] = isset($data['price']) ? $data['price'] : null;
             }
+
+            $data['price'] = isset($data['price']) ? $data['price'] : 0;
+
             $product = $this->create($data);
             if (isset($request['categories'])) {
                 $product->categories()->attach($request['categories']);
             }
-            if (isset($request['tags'])) {
-                $product->tags()->attach($request['tags']);
+            if (isset($request['grapes_js'])) {
+                $product->grapes_js()->attach($request['grapes_js']);
             }
+            if (isset($request['tags']) && !empty($request['tags'])) {
+                $syncTags = $this->evaluateTags($request);
+                $product->tags()->attach($syncTags);
+            }
+
+
+
             if (isset($request['variations'])) {
                 $product->variations()->attach($request['variations']);
             }
@@ -125,8 +137,12 @@ class ProductRepository extends BaseRepository
             if (isset($request['categories'])) {
                 $product->categories()->sync($request['categories']);
             }
+            if (isset($request['grapes_js'])) {
+                $product->grapes_js()->sync($request['grapes_js']);
+            }
             if (isset($request['tags'])) {
-                $product->tags()->sync($request['tags']);
+                $syncTags = $this->evaluateTags($request);
+                $product->tags()->sync($syncTags);
             }
             if (isset($request['variations'])) {
                 $product->variations()->sync($request['variations']);
@@ -181,14 +197,17 @@ class ProductRepository extends BaseRepository
                 }
             }
             $data = $request->only($this->dataArray);
+
+            $data['price'] = isset($data['price']) ? $data['price'] : 0;
+
             if ($request->product_type == ProductType::VARIABLE) {
                 $data['price'] = NULL;
                 $data['sale_price'] = NULL;
                 $data['sku'] = NULL;
             }
             if ($request->product_type == ProductType::SIMPLE) {
-                $data['max_price'] = $data['price'];
-                $data['min_price'] = $data['price'];
+                $data['max_price'] = isset($data['price']) ? $data['price'] : null;
+                $data['min_price'] = isset($data['price']) ? $data['price'] : null;
             }
             $product->update($data);
             if ($product->product_type === ProductType::SIMPLE) {
@@ -212,5 +231,31 @@ class ProductRepository extends BaseRepository
         } catch (Exception $e) {
             return [];
         }
+    }
+
+
+    private function evaluateTags($request)
+    {
+        $syncTags = [];
+
+        foreach ($request['tags'] as $key => $tag) {
+
+            if (is_string($tag)) {
+                $exists = Tag::where('name', $tag)->first();
+                if (!empty($exists)) {
+                    $syncTags[$key] = $exists->id;
+                } else {
+                    $createdTag =  Tag::create([
+                        'name' => $tag
+                    ]);
+                    $syncTags[$key] = $createdTag->id;
+                }
+            } else {
+                $syncTags[$key] = $tag;
+            }
+        }
+
+
+        return $syncTags;
     }
 }

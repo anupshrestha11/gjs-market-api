@@ -16,6 +16,7 @@ use Marvel\Http\Controllers\CheckoutController;
 use Marvel\Http\Controllers\CouponController;
 use Marvel\Http\Controllers\DownloadController;
 use Marvel\Http\Controllers\FeedbackController;
+use Marvel\Http\Controllers\GrapeVersionController;
 use Marvel\Http\Controllers\ManufacturerController;
 use Marvel\Http\Controllers\OrderController;
 use Marvel\Http\Controllers\OrderStatusController;
@@ -162,7 +163,6 @@ Route::group(['middleware' => ['can:' . Permission::CUSTOMER, 'auth:sanctum']], 
     Route::get('/followed-shops', [ShopController::class, 'userFollowedShops']);
     Route::get('/follow-shop', [ShopController::class, 'userFollowedShop']);
     Route::post('/follow-shop', [ShopController::class, 'handleFollowShop']);
-
 });
 
 Route::group(
@@ -232,6 +232,8 @@ Route::group(['middleware' => ['permission:' . Permission::SUPER_ADMIN, 'auth:sa
     Route::apiResource('categories', CategoryController::class, [
         'only' => ['store', 'update', 'destroy'],
     ]);
+    Route::apiResource('grapes-js', GrapeVersionController::class);
+
     Route::apiResource('tags', TagController::class, [
         'only' => ['store', 'update', 'destroy'],
     ]);

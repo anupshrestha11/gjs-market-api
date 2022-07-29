@@ -112,6 +112,10 @@ class ImportDemoData extends Command
         $questions_sql = file_get_contents($questions_path);
         DB::statement($questions_sql);
 
+        $grapejs_path = public_path('sql/grapejs.sql');
+        $grapejs_sql = file_get_contents($grapejs_path);
+        DB::statement($grapejs_sql);
+
         $this->info('Seed completed successfully!');
     }
 }

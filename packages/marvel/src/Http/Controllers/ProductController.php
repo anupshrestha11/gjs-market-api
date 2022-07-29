@@ -54,6 +54,8 @@ class ProductController extends CoreController
     public function store(ProductCreateRequest $request)
     {
         if ($this->repository->hasPermission($request->user(), $request->shop_id)) {
+             // auto generate sku
+            $request['sku'] = bin2hex(openssl_random_pseudo_bytes(10));
             return $this->repository->storeProduct($request);
         } else {
             throw new MarvelException(NOT_AUTHORIZED);
@@ -85,7 +87,7 @@ class ProductController extends CoreController
         try {
             $limit = isset($request->limit) ? $request->limit : 10;
             $product = $this->repository
-                ->with(['type', 'shop', 'categories', 'tags', 'variations.attribute.values', 'variation_options', 'author', 'manufacturer'])
+                ->with(['type', 'shop', 'categories','grapes_js','tags', 'variations.attribute.values', 'variation_options', 'author', 'manufacturer'])
                 ->withCount(['orders' => function ($query) {
                     $query->where('parent_id', null);
                 }])

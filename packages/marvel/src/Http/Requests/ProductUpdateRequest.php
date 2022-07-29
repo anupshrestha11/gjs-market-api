@@ -36,7 +36,7 @@ class ProductUpdateRequest extends FormRequest
             'manufacturer_id'     => ['nullable', 'exists:Marvel\Database\Models\Manufacturer,id'],
             'author_id'     => ['nullable', 'exists:Marvel\Database\Models\Author,id'],
             'categories'  => ['exists:Marvel\Database\Models\Category,id'],
-            'tags'        => ['exists:Marvel\Database\Models\Tag,id'],
+            'tags'        => ['array'],
             'digital_file'       => ['array'],
             'product_type' => [Rule::in([ProductType::SIMPLE, ProductType::VARIABLE])],
             'unit'        => ['string'],
