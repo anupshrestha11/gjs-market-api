@@ -89,6 +89,9 @@ class ProductRepository extends BaseRepository
                 $data['max_price'] = isset($data['price']) ? $data['price'] : null;
                 $data['min_price'] = isset($data['price']) ? $data['price'] : null;
             }
+
+            $data['price'] = isset($data['price']) ? $data['price'] : 0;
+
             $product = $this->create($data);
             if (isset($request['categories'])) {
                 $product->categories()->attach($request['categories']);
@@ -137,7 +140,7 @@ class ProductRepository extends BaseRepository
             if (isset($request['grapes_js'])) {
                 $product->grapes_js()->sync($request['grapes_js']);
             }
-            if (isset($request['tags']) && !empty($request['tags'])) {
+            if (isset($request['tags'])) {
                 $syncTags = $this->evaluateTags($request);
                 $product->tags()->sync($syncTags);
             }
@@ -194,6 +197,9 @@ class ProductRepository extends BaseRepository
                 }
             }
             $data = $request->only($this->dataArray);
+
+            $data['price'] = isset($data['price']) ? $data['price'] : 0;
+
             if ($request->product_type == ProductType::VARIABLE) {
                 $data['price'] = NULL;
                 $data['sale_price'] = NULL;
